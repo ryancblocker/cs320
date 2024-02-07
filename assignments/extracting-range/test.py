@@ -1,27 +1,57 @@
-#pseudo code
-# The Big Oh of this should be O(k log k)
-
-#extract declaration (list, low, high)
-    #if list is None
-        #return None
-
-    #if low > high
-        #return None
-
-    #if low or high = None
-        #return all values
-
-    #if list is empty
-        #return the elements in empty list
-
-    #if low and high are not given
-        #return all values
-
-#test with [2,2,3,4] 2 and 4
-#test with []
-#test with [1,2,3,4,5,6,7,8,9] 4 and 9
-#test with []
-
-
 def extract(list_s, lo, hi):
-    return 0
+    
+    def lo_bound(list_s, target):
+        left = 0
+        right = len(list_s)
+
+        while left < right:
+            mid = (left + right) // 2
+            if list_s[mid] < target:
+                left = mid + 1
+            else:
+                right = mid  #found lo bound
+        return left
+
+    def hi_bound(list_s, target):
+        left = 0
+        right = len(list_s)
+
+        while left < right:
+            mid = (left + right) // 2
+            if list_s[mid] <= target:
+                left = mid + 1
+            else:
+                right = mid  #found lo bound
+        return left
+
+    if list_s is None:
+        return None
+    
+    elif len(list_s) is 0:
+        return list_s
+    
+    elif lo is None:
+        return list_s[0:hi]
+
+    elif hi is None:
+        return list_s[lo_bound(list_s, lo):len(list_s)]
+
+    elif lo and hi is None:
+        return list_s
+    
+    elif lo > hi:
+        return None
+    
+    lo = lo_bound(list_s, lo)
+    hi = hi_bound(list_s, hi)
+
+    return list_s[lo:hi]
+
+print(extract(None, 1, 5)) # Should print None
+print(extract([], 1, 5)) # Should print []
+print(extract([1, 2, 3, 4, 5], 5, 1)) # Should print None
+print(extract([1, 2, 3, 4, 5], None, 3)) # Should print [1, 2, 3]
+print(extract([1, 2, 3, 4, 5], 3, None)) # Should print [3, 4, 5]
+print(extract([2, 2, 3, 4, 4, 5], 2, 4)) # Should print [2, 2, 3, 4, 4]
+print(extract([1, 3, 5, 7, 9], 4, 8)) # Should print [5, 7]
+print(extract([1, 2, 3, 4, 5], 0, 6)) # Should print [1, 2, 3, 4, 5]
