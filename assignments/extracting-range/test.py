@@ -1,28 +1,28 @@
 def extract(list_s, lo, hi):
     
-    def lo_bound(list_s, target):
+    def bound(list_s, target, isLow):
         left = 0
         right = len(list_s)
 
         while left < right:
             mid = (left + right) // 2
-            if list_s[mid] < target:
+            if list_s[mid] < target or (isLow and list_s[mid] == target):
                 left = mid + 1
             else:
                 right = mid  #found lo bound
         return left
 
-    def hi_bound(list_s, target):
-        left = 0
-        right = len(list_s)
+    # def hi_bound(list_s, target):
+    #     left = 0
+    #     right = len(list_s)
 
-        while left < right:
-            mid = (left + right) // 2
-            if list_s[mid] <= target:
-                left = mid + 1
-            else:
-                right = mid  #found lo bound
-        return left
+    #     while left < right:
+    #         mid = (left + right) // 2
+    #         if list_s[mid] <= target:
+    #             left = mid + 1
+    #         else:
+    #             right = mid  #found lo bound
+    #     return left
 
     if list_s is None:
         return None
@@ -34,7 +34,7 @@ def extract(list_s, lo, hi):
         return list_s[0:hi]
 
     elif hi is None:
-        return list_s[lo_bound(list_s, lo):len(list_s)]
+        return list_s[bound(list_s, lo-1, isLow=True):]
 
     elif lo and hi is None:
         return list_s
@@ -42,8 +42,8 @@ def extract(list_s, lo, hi):
     elif lo > hi:
         return None
     
-    lo = lo_bound(list_s, lo)
-    hi = hi_bound(list_s, hi)
+    lo = bound(list_s, lo, isLow=True)
+    hi = bound(list_s, hi, isLow=False)
 
     return list_s[lo:hi]
 
