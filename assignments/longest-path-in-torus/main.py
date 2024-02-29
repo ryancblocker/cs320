@@ -1,69 +1,50 @@
 def longest_path(torus):
+    if torus is None or not torus[0]:
+        return []
+    
+    if not isinstance(torus[0], list):
+        return None
+
+    for row in torus:
+        if not isinstance(row, list):
+            return None
+        
+    if len(row) != len(torus[0]):
+            return None
+
+    if not isinstance(torus, list):
+        return None
+    
+    if len(torus) == 1:
+        return [(0, 0)]
+    if len(torus[0]) == 1:
+        return [(0, 0)]
 
     num_rows = len(torus)
     num_cols = len(torus[0])
-    
-    def is_valid(torus, x, y, value):
-        x = x % num_rows
-        y = y % num_cols
-        return torus[x][y] > value
-    
-    def longest_path_from_cell(torus, x, y, cache):
-        x = x % num_rows
-        y = y % num_cols
 
-        if cache[x][y] != -1:
-            return cache[x][y]
-        
-        result = 1
-        value = torus[x][y]
-        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-        for direction in directions:
-            dir_row, dir_col = direction
-            nx = x + dir_row
-            ny = y + dir_col
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    max_path_length = 0
+    max_path = []
 
-            if is_valid(torus, nx, ny, value):
-                result = max(result, 1 + longest_path_from_cell(torus, nx, ny, cache))
-        
-        cache[x][y] = result
-        return result
-    
-    def longest_path(torus):
-        if torus or not torus[0]:
-            return []
-        
-        cache = [[-1] * num_cols for _ in range(num_rows)]
-        
-        start_cell = None
-        max_length = 0
+    for i in range(num_rows):
+        for j in range(num_cols):
+            queue = [(i, j, [(i, j)])]
+            front = 0
+            while front < len(queue):
+                x, y, path = queue[front]
+                front += 1
+                for dx, dy in directions:
+                    new_x, new_y = (x + dx) % num_rows, (y + dy) % num_cols
+                    if torus[new_x][new_y] > torus[x][y]:
+                        new_path = path + [(new_x, new_y)]
+                        queue.append((new_x, new_y, new_path))
+                        if len(new_path) > 1 and len(new_path) > max_path_length:
+                            max_path_length = len(new_path)
+                            max_path = new_path
+                        elif len(new_path) == max_path_length:
+                            max_path = new_path  
 
-        for x in range(num_rows):
-            for y in range(num_cols):
-                length = longest_path_from_cell(torus, x, y, cache)
-
-                if length > max_length:
-                    max_length = length
-                    start_cell = (x, y)
-
-        if not start_cell:
-            return []
-        
-        path = [start_cell]
-        value = torus[start_cell[0]][start_cell[1]]
-
-        while len(path) < max_length:
-            directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-            for direction in directions:
-                dir_row, dir_col = direction
-                nx = path[-1][0] + dir_row
-                ny = path[-1][1] + dir_col
-
-                if is_valid(torus, nx, ny, value):
-                    path.append((nx, ny))
-                    value = torus[nx][ny]
-                    break
-        return path
-    
-    return longest_path(torus)
-   
+    if not max_path:
+        return []
+    return max_path
