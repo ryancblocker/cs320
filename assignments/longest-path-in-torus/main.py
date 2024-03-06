@@ -35,7 +35,8 @@ def longest_path(torus):
                 x, y, path = queue[front]
                 front += 1
                 for dx, dy in directions:
-                    new_x, new_y = (x + dx) % num_rows, (y + dy) % num_cols
+                    new_x = (x + dx) % num_rows
+                    new_y = (y + dy) % num_cols
                     if torus[new_x][new_y] > torus[x][y]:
                         new_path = path + [(new_x, new_y)]
                         queue.append((new_x, new_y, new_path))
@@ -43,7 +44,7 @@ def longest_path(torus):
                             max_path_length = len(new_path)
                             max_path = new_path
                         elif len(new_path) == max_path_length:
-                            max_path = new_path  
+                            max_path = new_path
 
     if not max_path:
         return []
