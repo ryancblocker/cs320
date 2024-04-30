@@ -1,6 +1,5 @@
 import random
 
-
 def placement(num_objects, map):
     if num_objects <= 0 or map is None:
         return None
